@@ -9,12 +9,12 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
-    "pdf" % "pdf_2.9.1" % "0.2"
+      "org.xhtmlrenderer" % "core-renderer" % "R8",
+      "net.sf.jtidy" % "jtidy" % "r938"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
       // Add your own project settings here
-      resolvers += Resolver.url("Violas Play Modules", url("http://www.joergviola.de/releases/"))(Resolver.ivyStylePatterns)
     )
 
 }

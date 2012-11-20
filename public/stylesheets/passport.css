@@ -1,0 +1,67 @@
+@page {
+    size: A5 portrait;
+    margin: 1cm;
+}
+
+.details {
+    position: absolute;
+    left: 4.5cm;
+    top: 10cm;
+    right: 0cm;
+}
+
+.machine {
+    position: absolute;
+    left: 0cm;
+    top: 17.8cm;
+    right: 0cm;
+    font-size: 0.485cm;
+    font-family: Courier;
+    text-transform: uppercase;
+}
+
+.image {
+    position: absolute;
+    left: 0cm;
+    top: 10cm;
+    right: 9cm;
+}
+
+span.field {
+    display: inline-block;
+    padding-right: 0.5cm;
+}
+div.field {
+    display: inline-block;
+    padding-right: 0.5cm;
+}
+
+
+p {
+    margin: 0;
+}
+
+.header {
+    font-family: Arial;
+    font-size: 0.15cm;
+}
+
+.value {
+    font-size: 0.485cm;
+    font-family: Courier;
+    text-transform: uppercase;
+}
+
+span.last {
+    display: block;
+}
+
+span.to-right {
+    float: right;
+}
+
+.picture {
+    position: absolute;
+    left: 0cm;
+    top: 9cm;
+}
