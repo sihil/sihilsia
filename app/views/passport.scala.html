@@ -1,54 +1,60 @@
 @(details: PassportDetails)
 
 @passportMain {
+<div class="title">
+    <span>@details.t.title</span>
+</div>
+<div class="image">
+    <img src="@details.picture" width="100%"/>
+</div>
 <div class="details @details.t.cssClass">
     <span class="field">
-        <p class="header">Type/Type</p>
-        <p class="value">P</p>
+        <span class="header">Type/Type</span>
+        <span class="value">P</span>
     </span>
     <span class="field to-right">
-        <p class="header">Passport No./Passeport No.</p>
-        <p class="value">@details.passportNumber</p>
+        <span class="header">Passport No./Passeport No.</span>
+        <span class="value">@details.passportNumber</span>
     </span>
     <span class="field to-right">
-        <p class="header">Code of Issuing State/Code de l'Etar émetteur</p>
-        <p class="value">@details.t.issuingState</p>
+        <span class="header">Code of Issuing State/Code de l'Etar émetteur</span>
+        <span class="value">@details.t.issuingState</span>
     </span>
     <span class="field last">
-        <p class="header">Surname/Nom (1)</p>
-        <p class="value">@details.familyName</p>
+        <span class="header">Surname/Nom (1)</span>
+        <span class="value">@details.familyName</span>
     </span>
     <span class="field last">
-        <p class="header">Given names/Prénoms (2)</p>
-        <p class="value">@details.givenName</p>
+        <span class="header">Given names/Prénoms (2)</span>
+        <span class="value">@details.givenName</span>
     </span>
     <span class="field last">
-        <p class="header">Nationality/Nationalité (3)</p>
-        <p class="value">@details.nationality</p>
+        <span class="header">Nationality/Nationalité (3)</span>
+        <span class="value">@details.nationality</span>
     </span>
     <span class="field last">
-        <p class="header">Date of birth/Date de naissance (4)</p>
-        <p class="value">@details.efDateOfBirth</p>
+        <span class="header">Date of birth/Date de naissance (4)</span>
+        <span class="value">@details.efDateOfBirth</span>
     </span>
     <span class="field">
-        <p class="header">Sex/Sexe (5)</p>
-        <p class="value">@details.sex</p>
+        <span class="header">Sex/Sexe (5)</span>
+        <span class="value">@details.sex</span>
     </span>
     <span class="field to-right">
-        <p class="header">Place of birth/Lieu de naissance (6)</p>
-        <p class="value">@details.placeOfBirth</p>
+        <span class="header">Place of birth/Lieu de naissance (6)</span>
+        <span class="value">@details.placeOfBirth</span>
     </span>
     <span class="field">
-        <p class="header">Date of issue/Date de délivrance (7)</p>
-        <p class="value">@details.efDateOfIssue</p>
+        <span class="header">Date of issue/Date de délivrance (7)</span>
+        <span class="value">@details.efDateOfIssue</span>
     </span>
     <span class="field to-right">
-        <p class="header">Authority/Authorité (8)</p>
-        <p class="value">SPA</p>
+        <span class="header">Authority/Authorité (8)</span>
+        <span class="value">SPA</span>
     </span>
     <span class="field">
-        <p class="header">Date of expiry/Date d'expiration (9)</p>
-        <p class="value">@details.efDateOfExpiry</p>
+        <span class="header">Date of expiry/Date d'expiration (9)</span>
+        <span class="value">@details.efDateOfExpiry</span>
     </span>
 </div>
     <div class="machine">

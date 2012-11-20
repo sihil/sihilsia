@@ -3,10 +3,19 @@
     margin: 1cm;
 }
 
+.title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 9.9cm;
+    text-align: center;
+    font-size: 0.6cm;
+}
+
 .details {
     position: absolute;
     left: 4.5cm;
-    top: 10cm;
+    top: 11cm;
     right: 0cm;
 }
 
@@ -23,7 +32,7 @@
 .image {
     position: absolute;
     left: 0cm;
-    top: 10cm;
+    top: 11cm;
     right: 9cm;
 }
 
@@ -37,16 +46,18 @@ div.field {
 }
 
 
-p {
+span {
     margin: 0;
 }
 
 .header {
+    display: block;
     font-family: Arial;
     font-size: 0.15cm;
 }
 
 .value {
+    display: block;
     font-size: 0.485cm;
     font-family: Courier;
     text-transform: uppercase;

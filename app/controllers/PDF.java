@@ -24,13 +24,16 @@ import org.xhtmlrenderer.util.Configuration;
 
 import play.Logger;
 import play.api.Play;
+import play.libs.WS;
 import play.api.templates.Html;
+import play.libs.F;
 import play.mvc.Result;
 import play.mvc.Results;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.BaseFont;
+import scala.Option;
 
 public class PDF {
 
@@ -42,11 +45,12 @@ public class PDF {
 
         @Override
         public ImageResource getImageResource(String uri) {
-            InputStream stream = Play.current().resourceAsStream(uri).get();
-            if (stream == null)
+            Logger.info("Getting image from "+uri);
+            Option<InputStream> stream = Play.current().resourceAsStream(uri);
+            if (stream.isEmpty())
                 return super.getImageResource(uri);
             try {
-                Image image = Image.getInstance(getData(stream));
+                Image image = Image.getInstance(getData(stream.get()));
                 scaleToOutputResolution(image);
                 return new ImageResource(new ITextFSImage(image));
             } catch (Exception e) {

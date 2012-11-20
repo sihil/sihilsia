@@ -18,7 +18,11 @@ object Pdf {
 
 object Data {
   val url = "https://docs.google.com/spreadsheet/pub?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&single=true&gid=0&output=csv"
-  val source = Source.fromURL(url)
+  def withSource[T](block: Source => T): T = {
+    val source = Source.fromURL(url)
+    try block(source)
+    finally source.close
+  }
 }
 
 case class PassportDetails(
@@ -88,7 +92,8 @@ case class PassportType(
   issuingState: String
 )
 object PassportType {
-  val siheria = PassportType("siheria", "", "SHR")
+  val siheria = PassportType("siheria", "Siheria", "SHR")
+  val siuda = PassportType("siuda arabia", "Kingdom of Siuda Arabia", "SAB")
 }
 
 object Application extends Controller {
@@ -101,9 +106,16 @@ object Application extends Controller {
     new DateMidnight(1993,1,1),
     "Siuda Arabian",
     new URL("http://sphotos-h.ak.fbcdn.net/hphotos-ak-ash4/392106_124361957681404_995414998_n.jpg"),
-    PassportType.siheria
+    PassportType.siuda
   )
 
+  def listApplications = Action {
+    val map = Data.withSource { source =>
+      val data = new CSVData(source)
+      data.map()
+    }
+    Ok(dumpMap(map))
+  }
 
   def index = Action {
     val result = Ok(views.html.index("Your new application is ready."))
