@@ -6,12 +6,22 @@ import org.w3c.tidy.Tidy
 import java.io._
 import org.xhtmlrenderer.pdf.{ITextFSImage, ITextOutputDevice, ITextUserAgent, ITextRenderer}
 import play.api.Play
-import com.lowagie.text.pdf.BaseFont
 import org.xhtmlrenderer.resource.{CSSResource, ImageResource, XMLResource}
-import com.lowagie.text.Image
 import java.net.URL
+import com.itextpdf.text.pdf.BaseFont
+import com.itextpdf.text.Image
 
 object Pdf extends Logging {
+
+  var imageCache = Map.empty[URL,Option[Image]]
+
+  def cachedImage(url: URL): Option[Image] = {
+    imageCache.get(url).getOrElse{
+      val img = image(url)
+      imageCache += url -> img
+      img
+    }
+  }
 
   def image(url: URL): Option[Image] = {
     try {
@@ -30,7 +40,7 @@ object Pdf extends Logging {
       val image = stream.map { realStream =>
         val image = Image.getInstance(getData(realStream))
         scaleToOutputResolution(image)
-        new ImageResource(new ITextFSImage(image))
+        new ImageResource(uri, new ITextFSImage(image))
       } getOrElse(super.getImageResource(uri))
       log.info("Returning image: %s" format image.getImage)
       image
@@ -94,6 +104,7 @@ object Pdf extends Logging {
     val myUserAgent = new MyUserAgent(renderer.getOutputDevice)
     myUserAgent.setSharedContext(renderer.getSharedContext)
     renderer.getSharedContext.setUserAgentCallback(myUserAgent)
+    renderer.getSharedContext.
     val document = XMLResource.load(reader).getDocument()
     renderer.setDocument(document, "http://localhost:9000")
     renderer.layout()

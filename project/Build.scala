@@ -9,7 +9,7 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
-      "org.xhtmlrenderer" % "core-renderer" % "R8",
+      "org.xhtmlrenderer" % "flying-saucer-pdf-itext5" % "9.0.1",
       "net.sf.jtidy" % "jtidy" % "r938",
       "net.sf.opencsv" % "opencsv" % "2.0"
     )

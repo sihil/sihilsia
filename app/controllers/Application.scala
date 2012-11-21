@@ -88,7 +88,7 @@ case class PassportDetails(
 
   lazy val validPhoto: Boolean = {
     picture.map{ url =>
-      Pdf.image(url).map { image =>
+      Pdf.cachedImage(url).map { image =>
         image.getWidth != 0.0
       }.getOrElse(false)
     }.getOrElse(false)
@@ -156,12 +156,13 @@ case class PassportType(
   cssClass: String,
   title: String,
   issuingState: String,
-  csvName: String
+  csvName: String,
+  passportNumberHeader: String
 )
 object PassportType extends CsvKeys {
-  val siheria = PassportType("siheria", "Siheria", "SHR", "Siheria")
-  val siuda = PassportType("siuda-arabia", "Kingdom of Siuda Arabia", "SAB", "Siuda Arabia")
-  val siychelle = PassportType("siychelle", "République des Seychelles", "SIY", "Siychelle")
+  val siheria = PassportType("siheria", "Siheria", "SHR", "Siheria", "Passport No./Passeport No.")
+  val siuda = PassportType("siuda-arabia", "Kingdom of Siuda Arabia", "SAB", "Siuda Arabia", "Passport No. ايسبشس")
+  val siychelle = PassportType("siychelle", "République des Seychelles", "SIY", "Siychelle","Passport No./Passeport No.")
   val types = Seq(siheria, siuda, siychelle)
 
   def randomPassport(context:Map[String,String]): PassportType = {
@@ -201,6 +202,11 @@ object Application extends Controller with Logging {
 
   def applicationsList = Action {
     Ok(views.html.detailsList(PassportDetails.allPassportApplications))
+  }
+
+  def reloadApplications = Action {
+    PassportDetails.reloadApplications()
+    Redirect(routes.Application.applicationsList())
   }
 
   def index = Action {
