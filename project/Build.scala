@@ -10,7 +10,8 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       // Add your project dependencies here,
       "org.xhtmlrenderer" % "core-renderer" % "R8",
-      "net.sf.jtidy" % "jtidy" % "r938"
+      "net.sf.jtidy" % "jtidy" % "r938",
+      "net.sf.opencsv" % "opencsv" % "2.0"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(

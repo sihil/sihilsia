@@ -5,8 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /pdf                        controllers.Application.pdf
-GET     /passport                   controllers.Application.passport
-GET     /passportPdf                   controllers.Application.passportPdf
+GET     /passport/:id               controllers.Application.passport(id: Int)
+GET     /passport/:id/pdf           controllers.Application.passportPdf(id: Int)
+GET     /applications/dump          controllers.Application.dumpApplications
+GET     /applications/list          controllers.Application.applicationsList
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

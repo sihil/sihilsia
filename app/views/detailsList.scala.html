@@ -1,0 +1,28 @@
+@(detailsList: Seq[PassportDetails])
+
+@main("Details List") {
+        <table>
+            <thead>
+                <tr>
+                <th>Application ID</th>
+                <th>Given Names</th>
+                <th>Family Name</th>
+                <th>Applicant e-mail</th>
+                <th>Warnings</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+    @detailsList.map{ passport =>
+                <tr>
+                    <td>@passport.applicationId</td>
+                    <td>@passport.givenName</td>
+                    <td>@passport.familyName</td>
+                    <td>@passport.email</td>
+                    <td>@passport.errors.getOrElse("")</td>
+                    <td><a href="@routes.Application.passportPdf(passport.applicationId)">Preview PDF</a></td>
+                </tr>
+    }
+            </tbody>
+        </table>
+}

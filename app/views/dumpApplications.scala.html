@@ -1,0 +1,7 @@
+@(rows: Iterator[String])
+
+@main("Applications"){
+@rows.map{ row =>
+  <p>@row</p>
+}
+}
