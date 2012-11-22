@@ -1,6 +1,6 @@
 @(details: PassportDetails)
 
-@passportMain {
+@pdfMain {
 <div class="title">
     <span>@details.t.title</span>
 </div>
@@ -9,52 +9,52 @@
 </div>
 <div class="details @details.t.cssClass">
     <span class="field">
-        <span class="header">Type/Type</span>
+        <span class="header">@details.t.header("type")</span>
         <span class="value">P</span>
     </span>
     <span class="field to-right">
-        <span class="header">@details.t.passportNumberHeader</span>
+        <span class="header">@details.t.header("passportNumber")</span>
         <span class="value">@details.passportNumber</span>
     </span>
     <span class="field to-right">
-        <span class="header">Code of Issuing State/Code de l'Etar émetteur</span>
+        <span class="header">@details.t.header("issuingState")</span>
         <span class="value">@details.t.issuingState</span>
     </span>
     <span class="field last">
-        <span class="header">Surname/Nom (1)</span>
+        <span class="header">@details.t.header("familyName")</span>
         <span class="value">@details.familyName</span>
     </span>
     <span class="field last">
-        <span class="header">Given names/Prénoms (2)</span>
+        <span class="header">@details.t.header("givenName")</span>
         <span class="value">@details.givenName</span>
     </span>
     <span class="field last">
-        <span class="header">Nationality/Nationalité (3)</span>
+        <span class="header">@details.t.header("nationality")</span>
         <span class="value">@details.nationality</span>
     </span>
     <span class="field last">
-        <span class="header">Date of birth/Date de naissance (4)</span>
-        <span class="value">@details.efDateOfBirth</span>
+        <span class="header">@details.t.header("dateOfBirth")</span>
+        <span class="value">@details.dateOfBirthString</span>
     </span>
     <span class="field">
-        <span class="header">Sex/Sexe (5)</span>
+        <span class="header">@details.t.header("sex")</span>
         <span class="value">@details.sex</span>
     </span>
     <span class="field to-right">
-        <span class="header">Place of birth/Lieu de naissance (6)</span>
+        <span class="header">@details.t.header("placeOfBirth")</span>
         <span class="value">@details.placeOfBirth</span>
     </span>
     <span class="field">
-        <span class="header">Date of issue/Date de délivrance (7)</span>
-        <span class="value">@details.efDateOfIssue</span>
+        <span class="header">@details.t.header("dateOfIssue")</span>
+        <span class="value">@details.dateOfIssueString</span>
     </span>
     <span class="field to-right">
-        <span class="header">Authority/Authorité (8)</span>
+        <span class="header">@details.t.header("authority")</span>
         <span class="value">SPA</span>
     </span>
     <span class="field">
-        <span class="header">Date of expiry/Date d'expiration (9)</span>
-        <span class="value">@details.efDateOfExpiry</span>
+        <span class="header">@details.t.header("dateOfExpiry")</span>
+        <span class="value">@details.dateOfExpiryString</span>
     </span>
 </div>
     <div class="machine">

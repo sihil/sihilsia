@@ -2,8 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
-import templates.Html
-import org.joda.time.{ReadableInstant, DateTime, DateMidnight}
+import org.joda.time.{ReadableInstant, DateMidnight}
 import io.Source
 import java.net.URL
 import org.joda.time.format.DateTimeFormat
@@ -39,17 +38,11 @@ case class PassportDetails(
 ) {
   val expiry = new DateMidnight(2012,11,25)
 
-  val englishFormatter = DateTimeFormat.forPattern("dd MMM /%'s' yy")
   val shortFormatter = DateTimeFormat.forPattern("yyMMdd")
-  val frenchMonthFormatter = DateTimeFormat.forPattern("MMM").withLocale(Locale.FRENCH)
 
-  def englishFrenchDateFormat(date: ReadableInstant): String = {
-    englishFormatter.print(date).format(frenchMonthFormatter.print(date).replace(".",""))
-  }
-
-  lazy val efDateOfBirth = englishFrenchDateFormat(dateOfBirth)
-  lazy val efDateOfIssue = englishFrenchDateFormat(dateOfIssue)
-  lazy val efDateOfExpiry = englishFrenchDateFormat(expiry)
+  lazy val dateOfBirthString = t.dateRenderer.print(dateOfBirth)
+  lazy val dateOfIssueString = t.dateRenderer.print(dateOfIssue)
+  lazy val dateOfExpiryString = t.dateRenderer.print(expiry)
   lazy val shortDateOfBirth = shortFormatter.print(dateOfBirth)
   lazy val shortExpiry = shortFormatter.print(expiry)
 
@@ -157,12 +150,61 @@ case class PassportType(
   title: String,
   issuingState: String,
   csvName: String,
-  passportNumberHeader: String
+  header: Map[String,String],
+  dateRenderer: DateRenderer
 )
+
+trait DateRenderer {
+  def print(date: ReadableInstant): String
+}
+
 object PassportType extends CsvKeys {
-  val siheria = PassportType("siheria", "Siheria", "SHR", "Siheria", "Passport No./Passeport No.")
-  val siuda = PassportType("siuda-arabia", "Kingdom of Siuda Arabia", "SAB", "Siuda Arabia", "Passport No. ايسبشس")
-  val siychelle = PassportType("siychelle", "République des Seychelles", "SIY", "Siychelle","Passport No./Passeport No.")
+  val englishFrenchHeaders = Map(
+    "type" -> "Type/Type",
+    "passportNumber" -> "Passport No./Passeport No.",
+    "issuingState" -> "Code of Issuing State/Code de l'Etar émetteur",
+    "familyName" -> "Surname/Nom (1)",
+    "givenName" -> "Given names/Prénoms (2)",
+    "nationality" -> "Nationality/Nationalité (3)",
+    "dateOfBirth" -> "Date of birth/Date de naissance (4)",
+    "sex" -> "Sex/Sexe (5)",
+    "placeOfBirth" -> "Place of birth/Lieu de naissance (6)",
+    "dateOfIssue" -> "Date of issue/Date de délivrance (7)",
+    "authority" -> "Authority/Authorité (8)",
+    "dateOfExpiry" -> "Date of expiry/Date d'expiration (9)"
+  )
+
+  val arabicEnglishHeaders = Map(
+    "type" -> "Type",
+    "passportNumber" -> "Passport No.",
+    "issuingState" -> "Code of Issuing State",
+    "familyName" -> "Surname",
+    "givenName" -> "Given names",
+    "nationality" -> "Nationality",
+    "dateOfBirth" -> "Date of birth",
+    "sex" -> "Sex",
+    "placeOfBirth" -> "Place of birth",
+    "dateOfIssue" -> "Date of issue",
+    "authority" -> "Authority",
+    "dateOfExpiry" -> "Date of expiry"
+  )
+
+  val englishFormatter = DateTimeFormat.forPattern("dd MMM yy")
+  val englishAndFrenchFormatter = DateTimeFormat.forPattern("dd MMM /%'s' yy")
+  val frenchMonthFormatter = DateTimeFormat.forPattern("MMM").withLocale(Locale.FRENCH)
+
+  val englishFrenchRenderer = new DateRenderer {
+    def print(date: ReadableInstant): String = {
+      englishAndFrenchFormatter.print(date).format(frenchMonthFormatter.print(date).replace(".",""))
+    }
+  }
+  val englishRenderer = new DateRenderer {
+    def print(date: ReadableInstant): String = englishFormatter.print(date)
+  }
+
+  val siheria = PassportType("siheria", "Siheria", "SHR", "Siheria", englishFrenchHeaders, englishFrenchRenderer)
+  val siuda = PassportType("siuda-arabia", "Kingdom of Siuda Arabia", "SAB", "Siuda Arabia", englishFrenchHeaders, englishRenderer)
+  val siychelle = PassportType("siychelle", "République des Seychelles", "SIY", "Siychelle", englishFrenchHeaders, englishFrenchRenderer)
   val types = Seq(siheria, siuda, siychelle)
 
   def randomPassport(context:Map[String,String]): PassportType = {

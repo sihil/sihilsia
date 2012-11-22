@@ -104,7 +104,6 @@ object Pdf extends Logging {
     val myUserAgent = new MyUserAgent(renderer.getOutputDevice)
     myUserAgent.setSharedContext(renderer.getSharedContext)
     renderer.getSharedContext.setUserAgentCallback(myUserAgent)
-    renderer.getSharedContext.
     val document = XMLResource.load(reader).getDocument()
     renderer.setDocument(document, "http://localhost:9000")
     renderer.layout()
