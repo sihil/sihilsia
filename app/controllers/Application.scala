@@ -8,6 +8,7 @@ import java.net.URL
 import org.joda.time.format.DateTimeFormat
 import java.util.Locale
 import java.security.MessageDigest
+import templates.Html
 
 trait Logging {
   implicit val log = Logger(getClass)
@@ -147,10 +148,10 @@ object PassportDetails extends Logging with CsvKeys {
 
 case class PassportType(
   cssClass: String,
-  title: String,
+  title: Html,
   issuingState: String,
   csvName: String,
-  header: Map[String,String],
+  header: Map[String,Html],
   dateRenderer: DateRenderer
 )
 
@@ -160,33 +161,37 @@ trait DateRenderer {
 
 object PassportType extends CsvKeys {
   val englishFrenchHeaders = Map(
-    "type" -> "Type/Type",
-    "passportNumber" -> "Passport No./Passeport No.",
-    "issuingState" -> "Code of Issuing State/Code de l'Etar émetteur",
-    "familyName" -> "Surname/Nom (1)",
-    "givenName" -> "Given names/Prénoms (2)",
-    "nationality" -> "Nationality/Nationalité (3)",
-    "dateOfBirth" -> "Date of birth/Date de naissance (4)",
-    "sex" -> "Sex/Sexe (5)",
-    "placeOfBirth" -> "Place of birth/Lieu de naissance (6)",
-    "dateOfIssue" -> "Date of issue/Date de délivrance (7)",
-    "authority" -> "Authority/Authorité (8)",
-    "dateOfExpiry" -> "Date of expiry/Date d'expiration (9)"
+    "type" -> Html("Type/Type"),
+    "passportNumber" -> Html("Passport No./Passeport No."),
+    "issuingState" -> Html("Code of Issuing State/Code de l'Etar émetteur"),
+    "familyName" -> Html("Surname/Nom (1)"),
+    "givenName" -> Html("Given names/Prénoms (2)"),
+    "nationality" -> Html("Nationality/Nationalité (3)"),
+    "dateOfBirth" -> Html("Date of birth/Date de naissance (4)"),
+    "sex" -> Html("Sex/Sexe (5)"),
+    "placeOfBirth" -> Html("Place of birth/Lieu de naissance (6)"),
+    "dateOfIssue" -> Html("Date of issue/Date de délivrance (7)"),
+    "authority" -> Html("Authority/Authorité (8)"),
+    "dateOfExpiry" -> Html("Date of expiry/Date d'expiration (9)")
   )
 
+  def header(english: String, headerImage: String): Html = {
+    Html("%s <img src='/public/images/headers/arabic_%s.png' class='arabic'/>" format (english, headerImage))
+  }
+
   val arabicEnglishHeaders = Map(
-    "type" -> "Type",
-    "passportNumber" -> "Passport No.",
-    "issuingState" -> "Code of Issuing State",
-    "familyName" -> "Surname",
-    "givenName" -> "Given names",
-    "nationality" -> "Nationality",
-    "dateOfBirth" -> "Date of birth",
-    "sex" -> "Sex",
-    "placeOfBirth" -> "Place of birth",
-    "dateOfIssue" -> "Date of issue",
-    "authority" -> "Authority",
-    "dateOfExpiry" -> "Date of expiry"
+    "type" -> header("Type", "type"),
+    "passportNumber" -> header("Passport No.", "passportNumber"),
+    "issuingState" -> header("Code of Issuing State", "issuingState"),
+    "familyName" -> header("Family name", "familyName"),
+    "givenName" -> header("Given names", "givenName"),
+    "nationality" -> header("Nationality", "nationality"),
+    "dateOfBirth" -> header("Date of birth", "dateOfBirth"),
+    "sex" -> header("Sex", "sex"),
+    "placeOfBirth" -> header("Place of birth", "placeOfBirth"),
+    "dateOfIssue" -> header("Date of issue", "dateOfIssue"),
+    "authority" -> header("Authority", "authority"),
+    "dateOfExpiry" -> header("Date of expiry", "dateOfExpiry")
   )
 
   val englishFormatter = DateTimeFormat.forPattern("dd MMM yy")
@@ -202,9 +207,9 @@ object PassportType extends CsvKeys {
     def print(date: ReadableInstant): String = englishFormatter.print(date)
   }
 
-  val siheria = PassportType("siheria", "Siheria", "SHR", "Siheria", englishFrenchHeaders, englishFrenchRenderer)
-  val siuda = PassportType("siuda-arabia", "Kingdom of Siuda Arabia", "SAB", "Siuda Arabia", englishFrenchHeaders, englishRenderer)
-  val siychelle = PassportType("siychelle", "République des Seychelles", "SIY", "Siychelle", englishFrenchHeaders, englishFrenchRenderer)
+  val siheria = PassportType("siheria", Html("Siheria"), "SHR", "Siheria", englishFrenchHeaders, englishFrenchRenderer)
+  val siuda = PassportType("siuda-arabia", Html("Kingdom of Siuda Arabia <img src='/public/images/headers/arabic_kingdom_of_siuda_arabia.png' class='arabic-title'/>"), "SAB", "Siuda Arabia", arabicEnglishHeaders, englishRenderer)
+  val siychelle = PassportType("siychelle", Html("République de Siychelle"), "SIY", "Siychelle", englishFrenchHeaders, englishFrenchRenderer)
   val types = Seq(siheria, siuda, siychelle)
 
   def randomPassport(context:Map[String,String]): PassportType = {

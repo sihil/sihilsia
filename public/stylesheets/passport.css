@@ -12,6 +12,23 @@
     font-size: 0.6cm;
 }
 
+img.arabic {
+    height: 0.23cm;
+    padding-left: 0.1cm;
+    vertical-align: baseline;
+    position: relative;
+    top: 0.043cm;
+}
+
+img.arabic-title {
+    height: 0.8cm;
+    padding-left: 0.3cm;
+    vertical-align: baseline;
+    position: relative;
+    top: 0.15cm;
+}
+
+
 .details {
     position: absolute;
     left: 4.5cm;
