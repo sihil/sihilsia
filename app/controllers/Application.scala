@@ -15,7 +15,8 @@ trait Logging {
 }
 
 object Data {
-  val url = new URL("https://docs.google.com/spreadsheet/pub?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&single=true&gid=0&output=csv")
+  //val url = new URL("https://docs.google.com/spreadsheet/pub?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&single=true&gid=0&output=csv")
+  val url = new URL("https://docs.google.com/a/hildrew.net/spreadsheet/ccc?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&output=csv")
   //val url = new URL("file:///Users/shildrew/Downloads/SihilsiaPassportAgency.csv")
   def withSource[T](block: Source => T): T = {
     val source = Source.fromURL(url)
