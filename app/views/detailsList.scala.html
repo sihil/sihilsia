@@ -19,12 +19,15 @@
                     <td>@passport.givenName</td>
                     <td>@passport.familyName</td>
                     <td>@passport.email</td>
-                    <td>@passport.errors.getOrElse("")</td>
+                    <td>@passport.errors.map{ error =>
+                        <span class="label label-important">@error</span>
+                    }.getOrElse("")</td>
                     <td>
-                       <a class="btn btn-mini" href="@routes.Application.passportPdf(passport.applicationId)">Preview PDF</a>
+                       <a class="btn btn-mini" href="@routes.Application.passportPdf(passport.applicationId)"><i class="icon-eye-open"></i> Preview PDF</a>
                        @if(hidden.contains(passport.applicationId)){
                            <a class="btn btn-mini" href="@routes.Application.show(passport.applicationId)">Unhide</a>
                        } else {
+                         <a class="btn btn-mini" href="@routes.Application.print(passport.applicationId)"><i class="icon-print"></i> Print & Hide</a>
                          <a class="btn btn-mini" href="@routes.Application.hide(passport.applicationId)">Hide</a>
                        }
                     </td>

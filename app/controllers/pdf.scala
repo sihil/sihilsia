@@ -76,7 +76,7 @@ object Pdf extends Logging {
   }
 
   def apply(html: Html): Result = {
-    val pdf = toBytes(tidify(html.body))
+    val pdf = toBytes(html)
     return Results.Ok(pdf).as("application/pdf");
   }
 

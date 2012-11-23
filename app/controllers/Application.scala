@@ -9,6 +9,8 @@ import org.joda.time.format.DateTimeFormat
 import java.util.Locale
 import java.security.MessageDigest
 import templates.Html
+import java.io.{FileOutputStream, File}
+import sbt.Process._
 
 trait Logging {
   implicit val log = Logger(getClass)
@@ -309,6 +311,18 @@ object Application extends Controller with Logging {
 
   def pdf = Action {
     Pdf(views.html.verybasic())
+  }
+
+  def print(id: Int) = Action {
+    val pdf = Pdf.toBytes(views.html.passport(PassportDetails(id).get))
+    val file = File.createTempFile("passport", ".pdf")
+    val fos = new FileOutputStream(file)
+    fos.write(pdf)
+    fos.close()
+    val command = "/usr/bin/lp -d Canon_iP4200 -o media=A5 %s" format file.getAbsolutePath
+    log.info("Executing print command %s" format command)
+    command.!!
+    Redirect(routes.Application.hide(id))
   }
 
   def passport(id: Int) = Action {

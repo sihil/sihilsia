@@ -11,7 +11,8 @@ object ApplicationBuild extends Build {
       // Add your project dependencies here,
       "org.xhtmlrenderer" % "flying-saucer-pdf-itext5" % "9.0.1",
       "net.sf.jtidy" % "jtidy" % "r938",
-      "net.sf.opencsv" % "opencsv" % "2.0"
+      "net.sf.opencsv" % "opencsv" % "2.0",
+      "org.scala-sbt" %% "process" % "0.11.3"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
