@@ -14,6 +14,31 @@ trait Logging {
   implicit val log = Logger(getClass)
 }
 
+trait MenuItem {
+  def title:String
+  def target:Call
+  def isActive(request:Request[AnyContent]):Boolean
+}
+
+case class SingleMenuItem(title: String, target: Call, activeInSubPaths: Boolean = false, enabled: Boolean = true) extends MenuItem{
+  def isActive(request: Request[AnyContent]): Boolean = {
+    activeInSubPaths && request.path.startsWith(target.url) || request.path == target.url
+  }
+}
+
+case class DropDownMenuItem(title:String, items: Seq[SingleMenuItem], target: Call = Call("GET", "#")) extends MenuItem {
+  def isActive(request: Request[AnyContent]) = items.exists(_.isActive(request))
+}
+
+object Menu {
+  lazy val menuItems = Seq(
+    SingleMenuItem("Application List", routes.Application.applicationsList(showAll = false)),
+    SingleMenuItem("Application List (ALL)", routes.Application.applicationsList(showAll = true)),
+    SingleMenuItem("Reload from Google Sheet", routes.Application.reloadApplications())
+  )
+}
+
+
 object Data {
   //val url = new URL("https://docs.google.com/spreadsheet/pub?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&single=true&gid=0&output=csv")
   val url = new URL("https://docs.google.com/a/hildrew.net/spreadsheet/ccc?key=0Al4Ude7rKp72dC0xcVkwdE5zN3dCd1NXWmlqQURReFE&output=csv")
@@ -229,6 +254,13 @@ object PassportType extends CsvKeys {
 
 object Application extends Controller with Logging {
 
+  val HIDDEN = "hidden"
+  implicit def session2hidden(session: Session) = new {
+    def hidden: Set[Int] = session.get(HIDDEN).map(_.split(',').filterNot(_ == "").map(_.toInt).toSet).getOrElse(Set())
+    def hide(id: Int):Session = session + (HIDDEN -> (hidden + id).mkString(","))
+    def show(id: Int):Session = session + (HIDDEN -> (hidden - id).mkString(","))
+  }
+
   val testPassport = PassportDetails(
     500,
     "Al-Saidi",
@@ -242,14 +274,16 @@ object Application extends Controller with Logging {
     "email@email.com"
   )
 
-  def dumpApplications = Action {
+  def dumpApplications = Action { request =>
     Data.withSource { source =>
-      Ok(views.html.dumpApplications(source.getLines()))
+      Ok(views.html.dumpApplications(request, source.getLines()))
     }
   }
 
-  def applicationsList = Action {
-    Ok(views.html.detailsList(PassportDetails.allPassportApplications))
+  def applicationsList(showAll: Boolean) = Action { implicit request =>
+    val hidden = session.hidden
+    val passports = PassportDetails.allPassportApplications.filterNot(app => hidden.contains(app.applicationId) && !showAll)
+    Ok(views.html.detailsList(request, passports, hidden))
   }
 
   def reloadApplications = Action {
@@ -257,9 +291,20 @@ object Application extends Controller with Logging {
     Redirect(routes.Application.applicationsList())
   }
 
-  def index = Action {
-    val result = Ok(views.html.index("Your new application is ready."))
-    result
+  def index = Action { request =>
+    Ok(views.html.index(request, "Welcome to the SPA site"))
+  }
+
+  def hide(id: Int) = Action { implicit request =>
+    Redirect(routes.Application.applicationsList()).withSession{
+      session.hide(id)
+    }
+  }
+
+  def show(id: Int) = Action { implicit request =>
+    Redirect(routes.Application.applicationsList(true)).withSession {
+      session.show(id)
+    }
   }
 
   def pdf = Action {

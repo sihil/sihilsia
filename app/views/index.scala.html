@@ -1,7 +1,7 @@
-@(message: String)
+@(request: Request[AnyContent], message: String)
 
-@main("Welcome to Play 2.0") {
-    
-    @play20.welcome(message)
+@main(request, "SPA") {
+
+    <h1>@message</h1>
     
 }

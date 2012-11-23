@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(request: Request[AnyContent], title: String)(content: Html)
 
 <!DOCTYPE html>
 
@@ -33,6 +33,7 @@
         <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js'></script>
     </head>
     <body>
+        @views.html.menu.appmenubar(request)
         <div class="container-fluid">
         @content
         </div>

@@ -1,6 +1,6 @@
-@(detailsList: Seq[PassportDetails])
+@(request: Request[AnyContent], detailsList: Seq[PassportDetails], hidden: Set[Int])
 
-@main("Details List") {
+@main(request, "Details List") {
         <table class="table table-condensed">
             <thead>
                 <tr>
@@ -20,7 +20,14 @@
                     <td>@passport.familyName</td>
                     <td>@passport.email</td>
                     <td>@passport.errors.getOrElse("")</td>
-                    <td><a href="@routes.Application.passportPdf(passport.applicationId)">Preview PDF</a></td>
+                    <td>
+                       <a class="btn btn-mini" href="@routes.Application.passportPdf(passport.applicationId)">Preview PDF</a>
+                       @if(hidden.contains(passport.applicationId)){
+                           <a class="btn btn-mini" href="@routes.Application.show(passport.applicationId)">Unhide</a>
+                       } else {
+                         <a class="btn btn-mini" href="@routes.Application.hide(passport.applicationId)">Hide</a>
+                       }
+                    </td>
                 </tr>
     }
             </tbody>

@@ -1,0 +1,11 @@
+@(request: Request[AnyContent])
+
+@menubar{
+            <div class="nav-collapse">
+                <ul class="nav">
+                    @for(item <- Menu.menuItems) {
+                    @menubaritem(request, item)
+                    }
+                </ul>
+            </div><!--/.nav-collapse -->
+}

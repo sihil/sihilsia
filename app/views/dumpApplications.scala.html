@@ -1,6 +1,6 @@
-@(rows: Iterator[String])
+@(request: Request[AnyContent], rows: Iterator[String])
 
-@main("Applications"){
+@main(request, "Applications"){
 @rows.map{ row =>
   <p>@row</p>
 }
