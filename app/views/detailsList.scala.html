@@ -7,6 +7,7 @@
                 <th>Application ID</th>
                 <th>Given Names</th>
                 <th>Family Name</th>
+                <th>Passport Type</th>
                 <th>Applicant e-mail</th>
                 <th>Warnings</th>
                 <th>Actions</th>
@@ -18,18 +19,21 @@
                     <td>@passport.applicationId</td>
                     <td>@passport.givenName</td>
                     <td>@passport.familyName</td>
+                    <td>@passport.t.csvName</td>
                     <td>@passport.email</td>
                     <td>@passport.errors.map{ error =>
                         <span class="label label-important">@error</span>
-                    }.getOrElse("")</td>
+                    }</td>
                     <td>
-                       <a class="btn btn-mini" href="@routes.Application.passportPdf(passport.applicationId)"><i class="icon-eye-open"></i> Preview PDF</a>
+                        @if(passport.errors.isEmpty){
+                        <a class="btn btn-mini" href="@routes.Application.passportPdf(passport.applicationId)"><i class="icon-eye-open"></i> Preview PDF</a>
                        @if(hidden.contains(passport.applicationId)){
                            <a class="btn btn-mini" href="@routes.Application.show(passport.applicationId)">Unhide</a>
                        } else {
                          <a class="btn btn-mini" href="@routes.Application.print(passport.applicationId)"><i class="icon-print"></i> Print & Hide</a>
                          <a class="btn btn-mini" href="@routes.Application.hide(passport.applicationId)">Hide</a>
                        }
+                        }
                     </td>
                 </tr>
     }

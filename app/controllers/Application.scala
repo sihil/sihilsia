@@ -58,21 +58,27 @@ case class PassportDetails(
   givenName: String,
   sex: String,
   placeOfBirth: String,
-  dateOfBirth: ReadableInstant,
+  dateOfBirthRaw: String,
   nationality: String,
   picture: Option[URL],
   t: PassportType,
   email: String,
   dateOfIssue: DateMidnight = new DateMidnight()
 ) {
+  lazy val dateOfBirth: Option[ReadableInstant] = try {
+    Some(PassportDetails.dobParser.parseDateTime(dateOfBirthRaw))
+  } catch {
+    case e: Throwable => None
+  }
+
   val expiry = new DateMidnight(2012,11,25)
 
   val shortFormatter = DateTimeFormat.forPattern("yyMMdd")
 
-  lazy val dateOfBirthString = t.dateRenderer.print(dateOfBirth)
+  lazy val dateOfBirthString = t.dateRenderer.print(dateOfBirth.get)
   lazy val dateOfIssueString = t.dateRenderer.print(dateOfIssue)
   lazy val dateOfExpiryString = t.dateRenderer.print(expiry)
-  lazy val shortDateOfBirth = shortFormatter.print(dateOfBirth)
+  lazy val shortDateOfBirth = shortFormatter.print(dateOfBirth.get)
   lazy val shortExpiry = shortFormatter.print(expiry)
 
   lazy val hash = familyName + givenName + sex + placeOfBirth + nationality
@@ -106,7 +112,11 @@ case class PassportDetails(
     padMachineLine(line)
   }
 
-  lazy val errors: Option[String] = if (validPhoto) None else Some("Photo not valid")
+  lazy val errors: List[String] = {
+    val photoError = if (validPhoto) None else Some("Photo not valid")
+    val dobError = if (dateOfBirth.isEmpty) Some("DOB not valid") else None
+    List(photoError, dobError).filter(_.isDefined).map(_.get)
+  }
 
   lazy val validPhoto: Boolean = {
     picture.map{ url =>
@@ -158,14 +168,13 @@ object PassportDetails extends Logging with CsvKeys {
   }
   def apply(id: Int, csvLine: Map[String,String]): PassportDetails = {
     log.info(csvLine.toString())
-    val dob = dobParser.parseDateTime(csvLine(DATE_OF_BIRTH))
     PassportDetails(
       id,
       csvLine(FAMILY_NAME),
       csvLine(GIVEN_NAMES),
       csvLine(SEX),
       csvLine(PLACE_OF_BIRTH),
-      dob,
+      csvLine(DATE_OF_BIRTH),
       csvLine(NATIONALITY),
       urlOption(csvLine(PHOTO_URL)),
       PassportType(csvLine(PASSPORT_TYPE),csvLine),
@@ -244,7 +253,7 @@ object PassportType extends CsvKeys {
     lazy val hash = Seq(FAMILY_NAME,GIVEN_NAMES,SEX,PLACE_OF_BIRTH,NATIONALITY).map(context).mkString
     lazy val index = {
       val hashBytes = MessageDigest.getInstance("MD5").digest(hash.getBytes)
-      math.abs(hashBytes.head.toInt) % 3
+      math.abs(hashBytes.head.toInt) % 2
     }
     types(index)
   }
@@ -269,7 +278,7 @@ object Application extends Controller with Logging {
     "Cristi",
     "Female",
     "Siuda Arabia",
-    new DateMidnight(1993,1,1),
+    "01/01/1993",
     "Siuda Arabian",
     Some(new URL("http://sphotos-h.ak.fbcdn.net/hphotos-ak-ash4/392106_124361957681404_995414998_n.jpg")),
     PassportType.siuda,
@@ -290,7 +299,7 @@ object Application extends Controller with Logging {
 
   def reloadApplications = Action {
     PassportDetails.reloadApplications()
-    Redirect(routes.Application.applicationsList())
+    Redirect(routes.Application.applicationsList(false))
   }
 
   def index = Action { request =>
@@ -298,7 +307,7 @@ object Application extends Controller with Logging {
   }
 
   def hide(id: Int) = Action { implicit request =>
-    Redirect(routes.Application.applicationsList()).withSession{
+    Redirect(routes.Application.applicationsList(false)).withSession{
       session.hide(id)
     }
   }

@@ -8,7 +8,8 @@ GET     /pdf                        controllers.Application.pdf
 GET     /passport/:id               controllers.Application.passport(id: Int)
 GET     /passport/:id/pdf           controllers.Application.passportPdf(id: Int)
 GET     /applications/dump          controllers.Application.dumpApplications
-GET     /applications/list          controllers.Application.applicationsList(showAll: Boolean ?= false)
+GET     /applications/list          controllers.Application.applicationsList(showAll: Boolean = false)
+GET     /applications/listAll       controllers.Application.applicationsList(showAll: Boolean = true)
 GET     /applications/reload        controllers.Application.reloadApplications
 GET     /applications/:id/show      controllers.Application.show(id: Int)
 GET     /applications/:id/hide      controllers.Application.hide(id: Int)
